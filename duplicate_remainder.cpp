@@ -11,12 +11,11 @@
 #include <string>
 
 // Function to calculate the remainder of a list of integers
-std::list<int> calculateRemainder(const std::list<int>& lst, int divisor) {
-    // List of remainder
+std::list<int> calculateRemainder(std::list<int> listOfInt, int divisor) {
     std::list<int> remainderList;
 
     // Calculate remainder
-    for (int element : lst) {
+    for (int element : listOfInt) {
         int remainderCalc = element % divisor;
         remainderList.push_back(remainderCalc);
     }
@@ -25,10 +24,10 @@ std::list<int> calculateRemainder(const std::list<int>& lst, int divisor) {
 }
 
 // Function to remove duplicates and find remainder
-std::list<int> duplicateRemover(const std::list<int>& lst, int divisor) {
+std::list<int> duplicateRemover(std::list<int> listOfInt, int divisor) {
     std::list<int> uniqueElements;
 
-    for (int element : lst) {
+    for (int element : listOfInt) {
         bool isUnique = true;
         for (int uniqueElement : uniqueElements) {
             if (element == uniqueElement) {
@@ -46,48 +45,46 @@ std::list<int> duplicateRemover(const std::list<int>& lst, int divisor) {
 }
 
 int main() {
-    while (true) {
-        // Create list and declare other variables
+    std::string userDecision;
+
+    do {
         std::list<int> listOfInt;
         std::string listOfStrs;
         std::string divisorStr;
         int divisorInt;
+        std::list<int> remainderList;
 
-        // Get list and divisor and display message
-        std::cout <<
-        "This program will remove any duplicates in a list of integers\n";
-        std::cout <<
-        "then it will find the remainder of the list with\n";
+        std::cout << "This program will remove any duplicates in a list of integers\n";
+        std::cout << "then it will find the remainder of the list with\n";
         std::cout << "the divisor from the user.\n";
-        std::cout <<
-        "Please enter the number you want the list to be divided by: ";
+        std::cout << "Please enter the number you want the list to be divided by: ";
         std::cin >> divisorStr;
 
-        std::cout << "Please enter your list of ints (separated by spaces): ";
-        std::getline(std::cin >> std::ws, listOfStrs);
+        while (true) {
+            std::cout << "Please enter an element of the list (if list is done, enter a decimal or str): ";
+            std::cin >> listOfStrs;
 
-        std::istringstream iss(listOfStrs);
-        int listElement;
+            try {
+                // Convert and add to the list
+                listOfInt.push_back(std::stoi(listOfStrs));
+
+            } catch (std::exception) {
+                // Error for string
+                std::cout << listOfStrs << " is not valid.\n";
+                break;
+            }
+        }
 
         try {
-            while (iss >> listElement) {
-                listOfInt.push_back(listElement);
-            }
-
             divisorInt = std::stoi(divisorStr);
 
-            // Check if the list has something in it
-            if (listOfInt.empty()) {
+            if (listOfInt.size() == 0) {
                 std::cout << "Please enter integers.\n";
             } else if (divisorInt == 0) {
-                // Check if the divisor is 0
                 std::cout << "You can't divide by 0.\n";
             } else {
-                // Call duplicate remover function
-                std::list<int> remainderList =
-                duplicateRemover(listOfInt, divisorInt);
+                remainderList = duplicateRemover(listOfInt, divisorInt);
 
-                // Display the new list
                 std::cout << "The remainder of the list without duplicates is ";
                 for (int num : remainderList) {
                     std::cout << num << " ";
@@ -96,17 +93,12 @@ int main() {
             }
 
             // See if the user wants to try again
-            std::string userDecision;
             std::cout << "Would you like to continue (y/n): ";
             std::cin >> userDecision;
             std::cout << "\n";
 
-            if (userDecision == "n" || userDecision == "N") {
-                break;
-            }
         } catch (std::exception) {
-            std::cout << divisorStr << " and "
-            << listOfStrs << " are not valid.\n";
+            std::cout << divisorStr << " is not valid.\n";
         }
-    }
+    } while (userDecision != "n" || userDecision != "N");
 }
